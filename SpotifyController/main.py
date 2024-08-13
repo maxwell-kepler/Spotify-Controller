@@ -1,11 +1,7 @@
-import os
-from dotenv import load_dotenv, dotenv_values 
-load_dotenv() 
+from spotify import Spotify
 
 def main() -> None:
-    print(os.environ.get("SPOTIPY_REDIRECT_URI"))
-    print(os.environ.get("SPOTIPY_CLIENT_ID"))
-    print(os.environ.get("SPOTIPY_CLIENT_SECRET"))
+    Spotify()
 
 if __name__ == '__main__':
     main()
