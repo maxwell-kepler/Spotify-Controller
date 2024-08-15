@@ -104,3 +104,59 @@ your Spotify Desktop App is open and try again.")
             print(error)
             exit()
         self.device = recent_device
+
+    ''' GETTERS
+    - Current Track provides a short list of valuable info about the current
+    song.
+    - Current Features provides a list of features of the song, such as energy,
+    key, tempo, time signature, and so on.
+    - Current Analysis provides too much info, not sure what to do with it.
+    - Current Volume returns the current volume of the player.
+    - Current Playback returns a boolean of the playback state.
+    '''
+
+    def get_current_track(self):
+        if self.get_playback() is False:
+            return None
+
+        currently_playing = self.sp.currently_playing()
+        track_id = currently_playing['item']['id']
+        track_name = currently_playing['item']['name']
+        artists = currently_playing['item']['artists']
+        artists_name = ', '.join([artist['name'] for artist in artists])
+        album_name = currently_playing['item']['album']['name']
+        link = currently_playing['item']['external_urls']['spotify']
+        uri = currently_playing['item']['uri']
+        current_track_info = {
+            "id": track_id,
+            "name": track_name,
+            "artists": artists_name,
+            "album": album_name,
+            "link": link,
+            "uri": uri,
+        }
+        return current_track_info
+
+    def get_song_features(self, song_uri=None):
+        self.safety_check()
+        if song_uri is None:
+            song_uri = self.get_current_track()["uri"]
+        features = self.sp.audio_features(song_uri)
+        return features
+
+    def get_song_analysis(self, track_id=None):
+        self.safety_check()
+        if track_id is None:
+            track_id = self.get_current_track()["id"]
+        analysis = self.sp.audio_analysis(track_id)
+        return analysis
+
+    def get_playback(self):
+        self.safety_check()
+        playback = self.sp.current_playback()['is_playing']
+        return playback
+
+    def get_current_volume(self):
+        self.safety_check()
+        current_volume = self.device.device_volume_percent
+        return current_volume
