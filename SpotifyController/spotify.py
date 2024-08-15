@@ -32,7 +32,12 @@ class Spotify:
 
         self.sp = spotipy.Spotify(auth=self.token)
         self.device = self.get_device()
-        self.ensure_original_device_connected()
+
+        print(self.get_current_volume())
+        pprint(self.get_playback())
+        self.play_current_track()
+        pprint(self.get_current_track())
+        pprint(self.get_song_features())
 
     def get_spotify_scope(self):
         scope = [
@@ -77,14 +82,25 @@ your Spotify Desktop App is open and try again.")
             print("Original ID:", id_1)
             print("New ID:", id_2)
 
-    def ensure_original_device_connected(self):
+    def device_active_check(self):
+        is_active = self.device.device_is_active
+        if not is_active:
+            raise Exception("[ERROR] Device is not active.")
+
+    def safety_check(self):
         try:
-            device_check = self.get_device()
+            recent_device = self.get_device()
         except Exception as error:
             print(error)
             exit()
         try:
-            self.compare_IDs(self.device.device_id, device_check.device_id)
+            self.compare_IDs(self.device.device_id, recent_device.device_id)
         except Exception as error:
             print(error)
             exit()
+        try:
+            self.device_active_check()
+        except Exception as error:
+            print(error)
+            exit()
+        self.device = recent_device
