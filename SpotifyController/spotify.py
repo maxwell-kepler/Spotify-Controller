@@ -185,3 +185,26 @@ your Spotify Desktop App is open and try again.")
             print("[ERROR] Invalid track_uri provided to play_specific.")
             print(error)
             exit()
+
+    ''' VOLUME CONTROL '''
+
+    def volume_modification(self, percent):
+        self.safety_check()
+        current_volume = self.get_current_volume()
+        new_volume = current_volume + percent
+        if new_volume < 0:
+            new_volume = 0
+        elif new_volume > 100:
+            new_volume = 100
+        try:
+            self.sp.volume(new_volume)
+        except Exception as error:
+            print("[ERROR] Was unable to change the volume.")
+            print(error)
+            exit()
+
+    def volume_down(self, percent=-10):
+        self.volume_modification(percent)
+
+    def volume_up(self, percent=10):
+        self.volume_modification(percent)
