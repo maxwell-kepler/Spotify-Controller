@@ -33,12 +33,6 @@ class Spotify:
         self.sp = spotipy.Spotify(auth=self.token)
         self.device = self.get_device()
 
-        print(self.get_current_volume())
-        pprint(self.get_playback())
-        self.play_current_track()
-        pprint(self.get_current_track())
-        pprint(self.get_song_features())
-
     def get_spotify_scope(self):
         scope = [
             "user-read-private",
@@ -141,7 +135,7 @@ your Spotify Desktop App is open and try again.")
         self.safety_check()
         if song_uri is None:
             song_uri = self.get_current_track()["uri"]
-        features = self.sp.audio_features(song_uri)
+        features = self.sp.audio_features(song_uri)[0]
         return features
 
     def get_song_analysis(self, track_id=None):
@@ -160,3 +154,34 @@ your Spotify Desktop App is open and try again.")
         self.safety_check()
         current_volume = self.device.device_volume_percent
         return current_volume
+
+    ''' PLAYBACK FEATURES '''
+
+    def play_current_track(self):
+        self.safety_check()
+        if not self.get_playback():
+            self.sp.start_playback()
+
+    def pause_current_track(self):
+        self.safety_check()
+        if self.get_playback():
+            self.sp.pause_playback()
+
+    def alternate_playback(self):
+        if self.get_playback():
+            self.pause_current_track()
+        else:
+            self.play_current_track()
+
+    def play_next_track(self):
+        self.safety_check()
+        self.sp.next_track()
+
+    def play_specific(self, track_uri):
+        self.safety_check()
+        try:
+            self.sp.start_playback(context_uri=track_uri)
+        except Exception as error:
+            print("[ERROR] Invalid track_uri provided to play_specific.")
+            print(error)
+            exit()

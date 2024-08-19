@@ -12,11 +12,11 @@
 ## Features
 1. Check if the device is playing
 2. Get
-    - Song
-        - Features
-        - Analysis
-    - Current track
+    - Song Features
+    - Song Analysis
+    - Current Track
     - Current Volume
+    - Current Playback
 3. Play
     - Next track
     - Previous track
