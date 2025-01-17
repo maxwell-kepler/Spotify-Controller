@@ -1,3 +1,4 @@
+# src/gesture/visualization.py
 import cv2
 import mediapipe as mp
 from typing import Optional, Dict, Tuple
